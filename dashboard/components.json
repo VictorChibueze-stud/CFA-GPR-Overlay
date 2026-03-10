@@ -1,0 +1,10 @@
+{
+  "components": [
+    "button",
+    "dialog",
+    "table",
+    "card",
+    "badge",
+    "tooltip"
+  ]
+}

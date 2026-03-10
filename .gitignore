@@ -33,3 +33,18 @@ Thumbs.db
 # Project output
 out/
 *.log
+# Data files — stay local, not for public repo
+data/data_gpr_daily_recent.csv
+dashboard/src/data/
+
+# API state & cache (runtime artifacts)
+api/state/*.json
+api/state/*.xlsx
+
+# Next.js
+dashboard/.next/
+dashboard/node_modules/
+dashboard/.env*
+
+# Vercel
+.vercel/dashboard/.next/

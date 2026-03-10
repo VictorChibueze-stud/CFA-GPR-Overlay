@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount data dir so sync job writes are visible to Next.js
+      - ./dashboard/public/data:/app/dashboard/public/data
+      # Persist sync state across restarts
+      - ./api/state:/app/api/state
+    environment:
+      - GPR_SYNC_ENABLED=${GPR_SYNC_ENABLED:-true}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  frontend:
+    image: node:20-slim
+    working_dir: /app
+    volumes:
+      - ./dashboard:/app
+      - /app/node_modules
+      - /app/.next
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    command: sh -c "npm install && npm run dev"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped

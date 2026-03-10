@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@theme {
+  --color-surface:         #020617;
+  --color-panel:           #0f172a;
+  --color-panel-elevated:  #1e293b;
+  --color-border:          #1e293b;
+  --color-text:            #f8fafc;
+  --color-muted:           #94a3b8;
+  --color-subtle:          #64748b;
+  --color-amber:           #f59e0b;
+  --color-red:             #ef4444;
+  --color-green:           #10b981;
+  --color-blue:            #60a5fa;
+  --color-blue-dim:        rgba(96,165,250,0.05);
+
+  --font-family-sans: 'Montserrat', sans-serif;
+  --font-family-mono: 'Montserrat', monospace;
+}
+
+:root {
+  --color-surface:         #020617;
+  --color-panel:           #0f172a;
+  --color-panel-elevated:  #1e293b;
+  --color-border:          #1e293b;
+  --color-text:            #f8fafc;
+  --color-muted:           #94a3b8;
+  --color-subtle:          #64748b;
+  --color-amber:           #f59e0b;
+  --color-red:             #ef4444;
+  --color-green:           #10b981;
+  --color-blue:            #60a5fa;
+  --color-blue-dim:        rgba(96,165,250,0.05);
+
+  --font-family-sans: 'Montserrat', sans-serif;
+  --font-family-mono: 'Montserrat', monospace;
+
+  /* Backward-compat aliases for components using old variable names */
+  --font-ibm-plex-mono: 'Montserrat', monospace;
+  --font-dm-sans:       'Montserrat', sans-serif;
+}
+
+:root.light {
+  --color-surface:        #f8fafc;
+  --color-panel:          #ffffff;
+  --color-border:         #e2e8f0;
+  --color-amber:          #d97706;
+  --color-red:            #dc2626;
+  --color-green:          #16a34a;
+  --color-muted:          #64748b;
+  --color-text:           #0f172a;
+  --color-blue:           #2563eb;
+}
+
+[data-theme="light"] {
+  --color-surface:         #f8fafc;
+  --color-panel:           #ffffff;
+  --color-panel-elevated:  #f1f5f9;
+  --color-panel-inset:     #e2e8f0;
+  --color-border:          #e2e8f0;
+  --color-divider:         #cbd5e1;
+  --color-text:            #0f172a;
+  --color-muted:           #64748b;
+  --color-subtle:          #94a3b8;
+  --color-amber:           #d97706;
+  --color-red:             #dc2626;
+  --color-green:           #059669;
+  --color-blue:            #2563eb;
+  --color-blue-dim:        rgba(37,99,235,0.05);
+}
+
+/* TODO: Tailwind utility classes (bg-slate-*) are hardcoded
+   and do not respond to data-theme. Full light mode requires
+   replacing slate-* classes with CSS variable equivalents. */
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-family-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Utility classes ─────────────────────────────────────── */
+
+.border-active-blue    { border-left: 2px solid #60a5fa; }
+.border-active-rose    { border-left: 2px solid #ef4444; }
+.border-active-emerald { border-left: 2px solid #10b981; }
+
+.stat-value { font-weight: 900; }
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* ─── Animations ──────────────────────────────────────────── */
+
+@keyframes gpr-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.55; }
+}
+
+/* ─── Print ───────────────────────────────────────────────── */
+
+@media print {
+  aside, nav, [data-topbar], #topbar { display: none !important; }
+  main { margin-left: 0 !important; padding-top: 0 !important; }
+  body, html { background: white !important; color: black !important; }
+  .recharts-wrapper { break-inside: avoid; }
+  body::after {
+    content: "GPR Intelligence Dashboard · Generated " attr(data-print-date);
+    display: block;
+    text-align: center;
+    font-size: 10px;
+    color: #666;
+    margin-top: 2rem;
+    border-top: 1px solid #ccc;
+    padding-top: 0.5rem;
+  }
+}

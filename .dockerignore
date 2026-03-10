@@ -1,0 +1,15 @@
+dashboard/node_modules
+dashboard/.next
+.venv
+__pycache__
+**/*.pyc
+.git
+api/state/sync_state.json
+api/state/*.xlsx
+.gitignore
+.env
+.env.local
+*.md
+.pytest_cache
+tests/
+notebooks/

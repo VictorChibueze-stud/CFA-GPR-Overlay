@@ -25,41 +25,43 @@ def _get_column(
     return None
 
 
-def convert_gpr_excel_to_csv(
-    input_path: Path,
-    output_path: Path,
+def convert(
+    excel_path: str,
+    csv_out: str,
     sheet_name: Optional[str | int] = None,
-) -> None:
+) -> int:
     """
-    Convert a GPR Excel file (e.g. data_gpr_daily_recent.xls) into a cleaned CSV
-    with the following columns:
-
-        N10D
-        GPRD
-        GPRD_ACT
-        GPRD_THREAT
-        date
-        GPRD_MA30
-        GPRD_MA7
-        event
-
-    Assumptions / behaviour
-    -----------------------
+    Convert GPR Excel file to CSV.
+    
+    Parameters
+    ----------
+    excel_path : str
+        Path to the input GPR Excel file (.xls or .xlsx)
+    csv_out : str
+        Path where the output CSV will be written
+    sheet_name : str | int | None, optional
+        Excel sheet name or index (default: 0, first sheet)
+    
+    Returns
+    -------
+    int
+        Number of data rows written (excluding header).
+    
+    Notes
+    -----
+    This function converts a GPR Excel file (e.g. data_gpr_daily_recent.xls)
+    into a cleaned CSV with columns: N10D, GPRD, GPRD_ACT, GPRD_THREAT, date,
+    GPRD_MA30, GPRD_MA7, event.
+    
     - Input is a .xls or .xlsx file from Caldara & Iacoviello.
-    - Typical original columns include:
-        DAY, GPRD, GPRD_ACT or GPRD_AC, GPRD_THREAT or GPRD_TH, N10D,
-        and potentially moving averages and event labels.
+    - Typical original columns include: DAY, GPRD, GPRD_ACT or GPRD_AC, 
+      GPRD_THREAT or GPRD_TH, N10D, and potentially moving averages/event labels.
     - If GPRD_MA30 / GPRD_MA7 do not exist, they are computed as rolling
       30-day and 7-day means of GPRD.
     - If an 'event' column is not present, it is filled with empty values.
-
-    Notes
-    -----
-    - This function only handles file-level cleaning. Ingestion into Mongo
-      and further validation happen in higher-level services.
     """
-    input_path = Path(input_path)
-    output_path = Path(output_path)
+    input_path = Path(excel_path)
+    output_path = Path(csv_out)
 
     if not input_path.exists():
         raise FileNotFoundError(f"Input Excel file not found: {input_path}")
@@ -150,6 +152,21 @@ def convert_gpr_excel_to_csv(
     # Save to CSV (no index)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     cleaned.to_csv(output_path, index=False)
+    
+    # Return number of rows written (excluding header)
+    return len(cleaned)
+
+
+def convert_gpr_excel_to_csv(
+    input_path: Path,
+    output_path: Path,
+    sheet_name: Optional[str | int] = None,
+) -> None:
+    """
+    Legacy wrapper for backward compatibility.
+    Use convert() instead.
+    """
+    convert(str(input_path), str(output_path), sheet_name)
 
 
 if __name__ == "__main__":
@@ -185,8 +202,5 @@ if __name__ == "__main__":
         except ValueError:
             sheet_arg = args.sheet_name
 
-    convert_gpr_excel_to_csv(
-        input_path=Path(args.input),
-        output_path=Path(args.output),
-        sheet_name=sheet_arg,
-    )
+    n = convert(args.input, args.output, sheet_arg)
+    print(f"Wrote {n} rows to {args.output}")
